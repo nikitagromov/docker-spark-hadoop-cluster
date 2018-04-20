@@ -12,5 +12,5 @@ RUN pip install ipython
 
 RUN pip install hdfs
 
-ENTRYPOINT sleep 5 && /usr/local/bin/hdfscli upload /opt/data/dataset.csv user/dataset.csv
+ENTRYPOINT sleep 5 && /usr/local/bin/hdfscli upload /opt/data/dataset.csv /user/dataset.csv
 

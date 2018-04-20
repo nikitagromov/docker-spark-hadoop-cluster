@@ -36,10 +36,6 @@ services:
       - NAMENODE_HOSTNAME=namenode
       - INIT_DAEMON_STEP=setup_spark
       - "constraint:node==spark-master"
-    links:
-      - datanode
-      - namenode
-
 
   spark-submit:
     build: ./pyspark
@@ -49,7 +45,7 @@ services:
       - ./hadoop.env
     environment:
       - SPARK_HOME=/spark
-    links:
+    depends_on:
       - datanode
       - namenode
       - spark-worker-1
@@ -64,7 +60,7 @@ services:
       - ./hadoop.env
     volumes:
       - ./hdfs-data:/opt/data
-    links:
+    depends_on:
       - datanode
       - namenode
 
@@ -72,26 +68,25 @@ services:
     image: bde2020/spark-worker:2.3.0-hadoop2.7
     depends_on:
       - spark-master
+      - datanode
+      - namenode
     environment:
       - SPARK_MASTER=spark://spark-master:7077
       - NAMENODE_HOSTNAME=namenode
       - "constraint:node==spark-worker-1"
     env_file:
       - ./hadoop.env
-    links:
-      - datanode
-      - namenode
+
 
   spark-worker-2:
     image: bde2020/spark-worker:2.3.0-hadoop2.7
     depends_on:
       - spark-master
+      - datanode
+      - namenode
     environment:
       - SPARK_MASTER=spark://spark-master:7077
       - NAMENODE_HOSTNAME=namenode
       - "constraint:node==spark-worker-2"
     env_file:
       - ./hadoop.env
-    links:
-      - datanode
-      - namenode
