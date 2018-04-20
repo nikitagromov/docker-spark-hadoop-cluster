@@ -3,7 +3,6 @@ services:
   namenode:
     image: bde2020/hadoop-namenode:1.1.0-hadoop2.8-java8
     container_name: namenode
-    hostname: namenode
     volumes:
       - ./data/namenode:/hadoop/dfs/name
     environment:
@@ -16,7 +15,6 @@ services:
 
   datanode:
     image: bde2020/hadoop-datanode:1.1.0-hadoop2.8-java8
-    hostname: datanode
     depends_on: 
       - namenode
     volumes:
@@ -29,7 +27,6 @@ services:
   spark-master:
     image: bde2020/spark-master:2.3.0-hadoop2.7
     container_name: spark-master
-    hostname: spark-master
     ports:
       - 8080:8080
       - 7077:7077
@@ -48,7 +45,6 @@ services:
     build: ./pyspark
     image: spark-submit
     container_name: spark-submit
-    hostname: spark-submit
     env_file:
       - ./hadoop.env
     environment:
@@ -60,10 +56,20 @@ services:
       - spark-worker-2
       - spark-master
 
+  hdfscli:
+    build: ./hdfscli
+    image: hdfscli
+    container_name: hdfscli
+    env_file:
+      - ./hadoop.env
+    volumes:
+      - ./hdfs-data:/opt/data
+    links:
+      - datanode
+      - namenode
 
   spark-worker-1:
     image: bde2020/spark-worker:2.3.0-hadoop2.7
-    hostname: spark-worker-1
     depends_on:
       - spark-master
     environment:
@@ -78,7 +84,6 @@ services:
 
   spark-worker-2:
     image: bde2020/spark-worker:2.3.0-hadoop2.7
-    hostname: spark-worker-2
     depends_on:
       - spark-master
     environment:

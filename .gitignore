@@ -1,2 +1,3 @@
 data/*
+hdfs-data/dataset.csv
 .DS_STORE
