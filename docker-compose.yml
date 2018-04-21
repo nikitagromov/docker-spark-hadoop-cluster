@@ -70,6 +70,8 @@ services:
     container_name: spark-worker-1
     depends_on:
       - spark-master
+      - datanode
+      - namenode
     environment:
       - SPARK_MASTER=spark://spark-master:7077
       - NAMENODE_HOSTNAME=namenode
@@ -83,6 +85,8 @@ services:
     container_name: spark-worker-2
     depends_on:
       - spark-master
+      - datanode
+      - namenode
     environment:
       - SPARK_MASTER=spark://spark-master:7077
       - NAMENODE_HOSTNAME=namenode
